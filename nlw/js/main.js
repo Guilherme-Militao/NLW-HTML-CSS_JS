@@ -90,9 +90,12 @@ const perguntas = [
       correta: 0
     }
   ];
+  const corretas = new Set();
 
   const quiz = document.querySelector('#quiz');
   const template = document.querySelector('template');
+  const acertos = document.querySelector('#acertos');
+
 
   for (const item of perguntas) {
     const quizItem = template.content.cloneNode(true);
@@ -102,8 +105,28 @@ const perguntas = [
     for (const resposta of item.respostas) {
         const dt = quizItem.querySelector('dl dt').cloneNode(true);
         dt.querySelector('span').textContent = resposta;
+        dt.querySelector('input').setAttribute('name','pergunta-'+perguntas.indexOf(item));
+        dt.querySelector('input').value = item.respostas.indexOf(resposta);
+        dt.querySelector('input').onchange = (event) =>
+
+        {
+
+          corretas.delete(item);
+
+          const acerto = event.target.value == item.correta;
+
+          if(acerto){
+            corretas.add(item);
+          }
+          
+          acertos.querySelector('span').textContent =`${corretas.size} de ${perguntas.length}`;
+        }
+
+
+
         quizItem.querySelector('dl').appendChild(dt);
     }
     quizItem.querySelector('dl dt').remove();
+
     quiz.appendChild(quizItem)
   }
